@@ -3,7 +3,7 @@ from flask_restless import ProcessingException
 from flask_login import current_user
 
 from server.forms import RegistrationForm
-from server.models import User, Keyword, Category, Event
+from server.models import User, Keyword, Category, Event, Resource, HowTo
 from server.logger import logger, logging
 
 
@@ -121,6 +121,7 @@ api_config = [
         'methods': ['GET', 'POST', 'DELETE', 'PATCH'],
         'preprocessors': {
             'PATCH_SINGLE': [
+                login_required_preprocessor,
                 owner_or_admin_required,
                 only_admin_can_approve
             ],
@@ -131,19 +132,73 @@ api_config = [
             ],
             'DELETE': [
                 login_required_preprocessor,
-                event_owned_by_current_user
+                owner_or_admin_required
             ]
 
         },
         'include_columns': ['id',
                             'name',
                             'description',
-                            'subtitle',
                             'start',
                             'end',
                             'created_by',
                             'keywords',
+                            'categories']
+    },
+    {
+        'model': Resource,
+        'methods': ['GET', 'POST', 'DELETE', 'PATCH'],
+        'preprocessors': {
+            'PATCH_SINGLE': [
+                login_required_preprocessor,
+                owner_or_admin_required,
+                only_admin_can_approve
+            ],
+            'POST': [
+                login_required_preprocessor,
+                created_by,
+                approved_preprocessor
+            ],
+            'DELETE': [
+                login_required_preprocessor,
+                owner_or_admin_required
+            ]
+        },
+        'include_columns': ['id',
+                            'title',
+                            'resource',
+                            'created_by',
+                            'is_approved',
                             'categories',
-                            'favorite_users']
+                            'keywords',
+                            'howtos']
+    },
+    {
+        'model': HowTo,
+        'methods': ['GET', 'POST', 'DELETE', 'PATCH'],
+        'preprocessors': {
+            'PATCH_SINGLE': [
+                login_required_preprocessor,
+                owner_or_admin_required,
+                only_admin_can_approve
+            ],
+            'POST': [
+                login_required_preprocessor,
+                created_by,
+                approved_preprocessor
+            ],
+            'DELETE': [
+                login_required_preprocessor,
+                owner_or_admin_required
+            ]
+        },
+        'include_columns': ['id',
+                            'title',
+                            'description',
+                            'created_by',
+                            'is_approved',
+                            'categories',
+                            'keywords',
+                            'resources']
     }
 ]

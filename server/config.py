@@ -10,7 +10,7 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 # Define the database - we are working with
 # SQLite for this example
-SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@localhost/motified'
+SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@localhost/synergize'
 DATABASE_CONNECT_OPTIONS = {}
 
 # Application threads. A common general assumption is

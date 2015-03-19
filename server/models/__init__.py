@@ -7,5 +7,8 @@ from server.models.event_user import EventUser
 from server.models.event_category import EventCategory
 from server.models.event_keyword import EventKeyword
 from server.models.event_favorite import EventFavorite
-
-
+from server.models.howto import HowTo
+from server.models.howto_category import HowToCategory
+from server.models.howto_keyword import HowToKeyword
+from server.models.howto_resource import HowToResource
+from server.models.resource import Resource
