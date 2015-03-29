@@ -6,25 +6,22 @@ from server.login_manager import login_manager
 from server.models import db
 
 
-def create_app() -> Flask:
+def create_app():
     """Creates and returns the Flask WSGI application
     and initializes helping components"""
     # Initialize json support for wtforms
     wtforms_json.init()
 
     # Define the WSGI Application object
-    app = Flask(
-        __name__,
-        template_folder="../../",
-        static_folder="../../static"
-    )
+    app = Flask(__name__)
 
     # Configurations
     app.config.from_object('server.config')
 
     # Initialize database with application
     db.init_app(app)
-    with app.test_request_context():
+
+    with app.app_context():
         db.create_all()
 
     # Initialize login manager with application
@@ -33,4 +30,4 @@ def create_app() -> Flask:
     # Setup the routes
     define_routes(app)
 
-    return app
+    return (app, db)

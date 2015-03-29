@@ -12,3 +12,5 @@ from server.models.howto_category import HowToCategory
 from server.models.howto_keyword import HowToKeyword
 from server.models.howto_resource import HowToResource
 from server.models.resource import Resource
+from server.models.resource_category import ResourceCategory
+from server.models.resource_keyword import ResourceKeyword
