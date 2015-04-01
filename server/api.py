@@ -87,7 +87,8 @@ api_config = [
                             'description',
                             'start',
                             'end',
-                            'keywords',
+                            'address',
+                            'display_address',
                             'categories']
     },
     {

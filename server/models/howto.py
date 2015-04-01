@@ -14,4 +14,4 @@ class HowTo(db.Model):
 
     resources = db.relationship('Resource', secondary='howto_resources')
     categories = db.relationship('Category', secondary='howto_categories')
-    keywords = db.relationship('Keyword', secondary='howto_keywords')
+    steps = db.relationship('Step', secondary='howto_steps')
