@@ -1,6 +1,5 @@
 """This module contains api preprocessors and the api configuration."""
 from flask_restless import ProcessingException
-from flask_login import current_user
 
 from server.forms import RegistrationForm
 from server.models import User, Keyword, Category, Event, Resource, HowTo
@@ -10,53 +9,6 @@ from server.logger import logger, logging
 def log_post(data):
     """Log data of a POST."""
     logger.log(logging.INFO, data)
-
-
-def created_by(data):
-    """Add current user id to POST data."""
-    data['created_by'] = [current_user.id]
-
-
-def make_non_admin(data):
-    """Ensure all users created through registration are non admin."""
-    data['is_admin'] = False
-
-
-def only_admin_can_approve(instance_id: int, data, **kwargs):
-    """Ensure only admin users can approve events."""
-    if 'is_approved' in data and current_user.is_admin is False:
-        raise ProcessingException('Only admins can approve events')
-
-
-def owner_or_admin_required(instance_id: int, data, **kwargs):
-    """Ensure only an event owner or an admin can update an event."""
-    if (
-        not current_user.owns_event_with_id(instance_id) and
-        not current_user.is_admin
-    ):
-        raise ProcessingException(
-            'Only event owners or admins can update this event')
-
-
-def approved_preprocessor(data):
-    """Ensure that events are entered as not approved."""
-    data['is_approved'] = current_user.is_admin
-
-
-def event_owned_by_current_user(instance_id: int):
-    """Preprocessor for api event DELETE endpoint.
-
-    Ensures event can only be deleted by a user with role 'owner'
-
-    :param instance_id: id of instance to be deleted
-    :raises ProcessingException: if current_user is not an owner of the event
-    :return:None
-    :rtype: None
-    """
-    event = Event.query.filter_by(id=instance_id).first()
-    owners = event.get_owners()
-    if current_user not in owners:
-        raise ProcessingException('Only event owners can delete events')
 
 
 def validate_with_form(form_class):
@@ -78,9 +30,9 @@ def remove_props(props):
     return preprocessor
 
 
-def login_required_preprocessor(*args, **kwargs):
+def login_required_preprocessor(data):
     """Ensure user is logged in via preprocessor."""
-    if not current_user.is_authenticated():
+    if 'admin' not in data and data['admin'] == 'test':
         raise ProcessingException(
             description='Not Authorized',
             code=401
@@ -94,7 +46,6 @@ api_config = [
         'methods': ['GET', 'POST', 'DELETE'],
         'preprocessors': {
             'POST': [
-                make_non_admin,
                 validate_with_form(RegistrationForm),
                 remove_props(['confirm'])
             ],
@@ -122,17 +73,12 @@ api_config = [
         'preprocessors': {
             'PATCH_SINGLE': [
                 login_required_preprocessor,
-                owner_or_admin_required,
-                only_admin_can_approve
             ],
             'POST': [
                 login_required_preprocessor,
-                created_by,
-                approved_preprocessor
             ],
             'DELETE': [
                 login_required_preprocessor,
-                owner_or_admin_required
             ]
 
         },
@@ -141,7 +87,6 @@ api_config = [
                             'description',
                             'start',
                             'end',
-                            'created_by',
                             'keywords',
                             'categories']
     },
@@ -151,24 +96,17 @@ api_config = [
         'preprocessors': {
             'PATCH_SINGLE': [
                 login_required_preprocessor,
-                owner_or_admin_required,
-                only_admin_can_approve
             ],
             'POST': [
                 login_required_preprocessor,
-                created_by,
-                approved_preprocessor
             ],
             'DELETE': [
                 login_required_preprocessor,
-                owner_or_admin_required
             ]
         },
         'include_columns': ['id',
                             'title',
                             'resource',
-                            'created_by',
-                            'is_approved',
                             'categories',
                             'keywords',
                             'howtos']
@@ -179,26 +117,19 @@ api_config = [
         'preprocessors': {
             'PATCH_SINGLE': [
                 login_required_preprocessor,
-                owner_or_admin_required,
-                only_admin_can_approve
             ],
             'POST': [
                 login_required_preprocessor,
-                created_by,
-                approved_preprocessor
             ],
             'DELETE': [
                 login_required_preprocessor,
-                owner_or_admin_required
             ]
         },
         'include_columns': ['id',
                             'title',
                             'description',
-                            'created_by',
-                            'is_approved',
                             'categories',
-                            'keywords',
+                            'steps',
                             'resources']
     }
 ]

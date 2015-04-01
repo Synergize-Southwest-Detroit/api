@@ -6,7 +6,6 @@ class Resource(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.Text)
     resource = db.Column(db.String(128))
-    created_by = db.Column(db.String(50))
     is_approved = db.Column(db.Boolean)
 
     howtos = db.relationship('HowTo', secondary='howto_resources')

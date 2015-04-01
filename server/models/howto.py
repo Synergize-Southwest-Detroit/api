@@ -10,7 +10,6 @@ class HowTo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.Text)
     description = db.Column(db.Text)
-    created_by = db.Column(db.String(50))
     is_approved = db.Column(db.Boolean)
 
     resources = db.relationship('Resource', secondary='howto_resources')

@@ -16,7 +16,6 @@ class Event(db.Model):
     start = db.Column(db.DateTime)
     end = db.Column(db.DateTime)
     is_approved = db.Column(db.Boolean)
-    created_by = db.Column(db.String(50))
 
     # users = association_proxy('event_user', 'user')
     favorite_users = association_proxy('event_favorite', 'user')
