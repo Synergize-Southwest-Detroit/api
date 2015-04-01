@@ -1,8 +1,7 @@
 """This module contains api preprocessors and the api configuration."""
 from flask_restless import ProcessingException
 
-from server.forms import RegistrationForm
-from server.models import User, Keyword, Category, Event, Resource, HowTo
+from server.models import Keyword, Category, Event, Resource, HowTo
 from server.logger import logger, logging
 
 
@@ -41,16 +40,6 @@ def login_required_preprocessor(data):
 
 
 api_config = [
-    {
-        'model': User,
-        'methods': ['GET', 'POST', 'DELETE'],
-        'preprocessors': {
-            'POST': [
-                validate_with_form(RegistrationForm),
-                remove_props(['confirm'])
-            ],
-        }
-    },
     {
         'model': Keyword,
         'methods': ['GET', 'POST', 'DELETE'],
