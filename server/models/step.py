@@ -8,6 +8,7 @@ class Step(db.Model):
 
     __tablename__ = 'steps'
     id = db.Column(db.Integer, primary_key=True)
+    order = db.Column(db.Integer)
     title = db.Column(db.Text)
     description = db.Column(db.Text)
     image = db.Column(db.Text)
